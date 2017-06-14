@@ -16,4 +16,10 @@ db.connectAsync()
   .then(() => db.queryAsync(`USE ${database}`))
   .then(() => createTables(db));
 
+db.createNewUser = function(username, hashedPassword) {
+  db.connectAsync()
+    .then(() => db.queryAsync(`someshit`));
+};
+
 module.exports = db;
+

@@ -11,6 +11,7 @@ const app = express();
 
 app.set('views', `${__dirname}/views`);
 app.set('view engine', 'ejs');
+
 app.use(partials());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -80,10 +81,18 @@ app.post('/links',
 /************************************************************/
 app.post('/signup',
   (req, res, next) => {
-    console.log(req.body);
-    Users.create(req.body);
-    //var newUser = new Users();
-    //newUser.create(req.body);
+    Users.get({ username: req.body.username })
+      .then((results) => {
+        if (!results) {
+          Users.create(req.body);
+          res.redirect('/');  
+        } else {
+          res.redirect('/signup');
+        }
+      });
+    //create cookie 
+    //send cookie in response
+    //redirect to logged in index
 
   });
 
