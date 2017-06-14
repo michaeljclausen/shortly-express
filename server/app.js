@@ -5,6 +5,7 @@ const partials = require('express-partials');
 const bodyParser = require('body-parser');
 const Auth = require('./middleware/auth');
 const models = require('./models');
+const Users = require('./models/user');
 
 const app = express();
 
@@ -77,7 +78,14 @@ app.post('/links',
 /************************************************************/
 // Write your authentication routes here
 /************************************************************/
+app.post('/signup',
+  (req, res, next) => {
+    console.log(req.body);
+    Users.create(req.body);
+    //var newUser = new Users();
+    //newUser.create(req.body);
 
+  });
 
 
 /************************************************************/
