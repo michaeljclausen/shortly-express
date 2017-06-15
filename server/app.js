@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const Auth = require('./middleware/auth');
 const models = require('./models');
 const Users = require('./models/user');
+const parseCookies = require('./middleware/cookieParser');
 
 const app = express();
 
@@ -17,6 +18,20 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../public')));
 
+app.get('/', 
+  (req, res) => {
+    
+    if (req.cookies === undefined) {
+      res.cookie('kai', 'likescookies');
+      res.send('');
+    } else {
+      console.log(req.cookies);
+      res.render('login');
+    }
+  });
+
+//app.use(parseCookies);
+//app.use(Auth);
 
 
 app.get('/', 
@@ -96,6 +111,22 @@ app.post('/signup',
 
   });
 
+app.post('/login',
+  (req, res, next) => {
+    Users.get({ username: req.body.username })
+      .then((results) => {
+        if (!results) {
+          res.redirect('/login');  
+        } else {
+          var passwordCompare = Users.compare(req.body.password, results.password, results.salt);
+          if (passwordCompare) {
+            res.redirect('/');  
+          } else {
+            res.redirect('/login');
+          }
+        }
+      });
+  });
 
 /************************************************************/
 // Handle the code parameter route last - if all other routes fail
